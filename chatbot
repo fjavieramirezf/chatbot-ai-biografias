@@ -1,0 +1,28 @@
+mkdir chatbot-ai
+cd chatbot-ai
+python -m venv venv
+source venv/bin/activate
+pip install Flask
+from flask import Flask, request, jsonify
+import random
+
+app = Flask(__name__)
+
+# Cargar textos desde un archivo
+def load_texts():
+    with open('texts.txt', 'r') as file:
+        return file.readlines()
+
+# Responder con un texto aleatorio
+def get_response(user_input):
+    texts = load_texts()
+    return random.choice(texts).strip()
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    user_input = request.json.get('message')
+    response = get_response(user_input)
+    return jsonify({'response': response})
+
+if __name__ == '__main__':
+    app.run(debug=True)
